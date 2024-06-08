@@ -41,14 +41,16 @@ def load_neos(neo_csv_path):
             else:
                 newLine['pha'] = False
             if newLine['diameter'] == '':
-                newLine['diamater'] = float('nan')
+                newLine['diameter'] = float('nan')
+            else:
+                newLine['diameter'] = float(newLine['diameter'])
 
             
             neo_deque.append(NearEarthObject(
                 pdes = newLine['pdes'],
                 name = newLine['name'],
                 diameter = newLine['diameter'],
-                hazardous = newLine['pha']
+                pha = newLine['pha']
             ))
 
 

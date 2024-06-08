@@ -46,7 +46,7 @@ class NearEarthObject:
         # and a missing diameter being represented by `float('nan')`.
         self.designation = info['pdes']
         self.name = info['name'] # will sanitize at ingest, empty strings will be set to None
-        self.diameter = info['diamater'] # or float('nan') to be set at input
+        self.diameter = info['diameter'] # or float('nan') to be set at input
         self.hazardous = info['pha'] # Boolean also to be set at ingest.
 
         # Create an empty initial collection of linked approaches.
