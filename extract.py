@@ -14,6 +14,7 @@ You'll edit this file in Task 2.
 """
 import csv
 import json
+from collections import deque
 
 from models import NearEarthObject, CloseApproach
 
@@ -24,8 +25,34 @@ def load_neos(neo_csv_path):
     :param neo_csv_path: A path to a CSV file containing data about near-Earth objects.
     :return: A collection of `NearEarthObject`s.
     """
-    # TODO: Load NEO data from the given CSV file.
-    return ()
+    with open(neo_csv_path,'r') as neoCSV:
+        reader = csv.DictReader(neoCSV)
+        neo_deque = deque()
+        for line in reader:
+            # get only the columns needed. Discard the rest
+            necessary_keys = {'pdes','name','pha','diameter'}
+            newLine = {key: line[key] for key in necessary_keys if key in line.keys()}
+            
+            # sanitization for the keys:
+            if newLine['name'] == '':
+                newLine['name'] = None
+            if newLine['pha'] == 'Y':
+                newLine['pha'] = True
+            else:
+                newLine['pha'] = False
+            if newLine['diameter'] == '':
+                newLine['diamater'] = float('nan')
+
+            
+            neo_deque.append(NearEarthObject(
+                pdes = newLine['pdes'],
+                name = newLine['name'],
+                diameter = newLine['diameter'],
+                hazardous = newLine['pha']
+            ))
+
+
+    return neo_deque
 
 
 def load_approaches(cad_json_path):
