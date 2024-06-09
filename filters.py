@@ -71,15 +71,36 @@ class AttributeFilter:
     def __repr__(self):
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
-class minVelocity(AttributeFilter):
-    def __init__(self,min_velocity = None):
-        self._min_velocity = min_velocity
+class checkDate(AttributeFilter):
+    @classmethod
+    def get(cls,approach):
+        # Returns the raw datetime object. Will turn it into a Date later.
+        return approach.datetime
 
+class checkDistance(AttributeFilter):
+    @classmethod
+    def get (cls,approach):
+        # Returns the distance
+        return approach.distance
+
+
+class checkVelocity(AttributeFilter):
     @classmethod
     def get(cls,approach):
         # Returns the Velocity
         return approach.velocity
 
+class checkDiameter(AttributeFilter):
+    @classmethod
+    def get (cls,approach):
+        # Returns the distance
+        return approach.neo.diameter
+    
+class checkHazardous(AttributeFilter):
+    @classmethod
+    def get (cls,approach):
+        # Returns the if this is a hazardous object
+        return approach.neo.hazardous
 
 def create_filters(
         date=None, start_date=None, end_date=None,
