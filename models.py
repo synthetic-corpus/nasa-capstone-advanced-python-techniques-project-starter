@@ -37,13 +37,14 @@ class NearEarthObject:
     def __init__(self, **info):
         """Create a new `NearEarthObject`.
 
-        :param info: A dictionary of excess keyword arguments supplied to the constructor.
+        :param info: This variadic for future proofing. i.e. new iterations of this project may take in additional keywords.
+
+            However, the data is expected to be sanitzied and edge cases handled prior to the invocation of the function.
+            Specifically, data sanitation is done on extract.py
+
+            Reason being, is I could concieve of getting this information via .csv, .json, an async request, sql response object of some sort etc. 
+            Each would require a custom helper function(s) to sanitize them anyway, so it's better to lightly couple the sanitization from object creation.
         """
-        # TODO: Assign information from the arguments passed to the constructor
-        # onto attributes named `designation`, `name`, `diameter`, and `hazardous`.
-        # You should coerce these values to their appropriate data type and
-        # handle any edge cases, such as a empty name being represented by `None`
-        # and a missing diameter being represented by `float('nan')`.
         self.designation = info['pdes']
         self.name = info['name'] # will sanitize at ingest, empty strings will be set to None
         self.diameter = info['diameter'] # or float('nan') to be set at input
@@ -98,15 +99,18 @@ class CloseApproach:
         """Create a new `CloseApproach`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
+
+            Similiar as above, all data transformation/ sanitization is done prior to the invocation of this fucntion.
+            Code for that sanitization is also found in extract.py
         """
         # TODO: Assign information from the arguments passed to the constructor
         # onto attributes named `_designation`, `time`, `distance`, and `velocity`.
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
-        self._designation = ''
-        self.time = None  # TODO: Use the cd_to_datetime function for this attribute.
-        self.distance = 0.0
-        self.velocity = 0.0
+        self._designation = info['designation']
+        self.time = info['time']
+        self.distance = info['distance']
+        self.velocity = info['velocity']
 
         # Create an attribute for the referenced NEO, originally None.
         self.neo = None
