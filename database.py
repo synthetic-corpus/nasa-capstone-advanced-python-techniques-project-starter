@@ -86,7 +86,7 @@ class NEODatabase:
             print("Bad input on get_neo_by_name! User input: %s " % (name))
             return None
         
-        filtered = [neo for neo in self._neos if neo['name'] == name]
+        filtered = [neo for neo in self._neos if neo.name == name]
         if len(filtered) > 0:
             print("get_neo_by_name found %s NEO. Should not exepect more than one. Input was %s" % (len(filtered), name))
             return filtered[0] # this is expected to work unless there is more than one NEO with the same name.
@@ -109,4 +109,11 @@ class NEODatabase:
         """
         # TODO: Generate `CloseApproach` objects that match all of the filters.
         for approach in self._approaches:
-            yield approach
+            passing = True # assume that the approach passes, but will be marked false by filters
+            for filter in filters:
+                if filter(approach) == False:
+                    # If any single turns out to be fasle, passing is false
+                    # There is no further logic that would flip it back to "true"
+                    passing = False
+            if passing:
+                yield approach

@@ -71,6 +71,15 @@ class AttributeFilter:
     def __repr__(self):
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
+class minVelocity(AttributeFilter):
+    def __init__(self,min_velocity = None):
+        self._min_velocity = min_velocity
+
+    @classmethod
+    def get(cls,approach):
+        # Returns the Velocity
+        return approach.velocity
+
 
 def create_filters(
         date=None, start_date=None, end_date=None,
