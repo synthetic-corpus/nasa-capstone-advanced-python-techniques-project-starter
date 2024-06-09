@@ -126,7 +126,7 @@ class CloseApproach:
         self.neo = None
 
     @property 
-    def time(self):
+    def datetime(self):
         """ gets the time as a raw datetime object. May be useful for sorting """
         return self.time
     

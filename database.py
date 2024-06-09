@@ -43,13 +43,13 @@ class NEODatabase:
         self._approaches = approaches
 
         # TODO: using this dict because otherwise we'd have to 'search' the deque everytime
-        self._neos_as_dict = {neo['des']: neo for neo in self._neos}
+        self._neos_as_dict = {neo.des: neo for neo in self._neos}
 
         for approach in approaches:
             # Associate approach to its NEO
-            approach['neo'] = self._neos_as_dict[approach['des']]
+            approach.neo = self._neos_as_dict[approach.des]
             # add approach to corresponding NEO
-            self._neos_as_dict[approach['des']].appendApproach(approach)
+            self._neos_as_dict[approach.des].appendApproach(approach)
 
 
     def get_neo_by_designation(self, designation):
@@ -65,7 +65,7 @@ class NEODatabase:
         :param designation: The primary designation of the NEO to search for.
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
-        return self._neos_as_dict(designation,None)
+        return self._neos_as_dict.get(designation,None)
 
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
