@@ -42,9 +42,15 @@ class NEODatabase:
         self._neos = neos
         self._approaches = approaches
 
-        # TODO: What additional auxiliary data structures will be useful?
+        # TODO: using this dict because otherwise we'd have to 'search' the deque everytime
+        self._neos_as_dict = {neo['des']: neo for neo in self._neos}
 
-        # TODO: Link together the NEOs and their close approaches.
+        for approach in approaches:
+            # Associate approach to its NEO
+            approach['neo'] = self._neos_as_dict[approach['des']]
+            # add approach to corresponding NEO
+            self._neos_as_dict[approach['des']].appendApproach(approach)
+
 
     def get_neo_by_designation(self, designation):
         """Find and return an NEO by its primary designation.

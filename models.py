@@ -18,6 +18,7 @@ quirks of the data set, such as missing names and unknown diameters.
 You'll edit this file in Task 1.
 """
 from helpers import cd_to_datetime, datetime_to_str
+import hashlib
 
 
 class NearEarthObject:
@@ -54,10 +55,19 @@ class NearEarthObject:
         self.approaches = []
 
     @property
+    def des(self):
+        """ gets the unique identifier of this NEO as a property """
+        return self.designation
+
+    @property
     def fullname(self):
         """Return a representation of the full name of this NEO."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
         return "%s - %s" % (self.designation,self.name) # what is the expectation when the object is unnamed?
+
+    def appendApproach(self,approach):
+        """ Appends an approach to this element. May add sorting here later"""
+        self.approaches.append(approach)
 
     def __str__(self):
         """Return `str(self)`."""
@@ -114,6 +124,23 @@ class CloseApproach:
 
         # Create an attribute for the referenced NEO, originally None.
         self.neo = None
+
+    @property 
+    def time(self):
+        """ gets the time as a raw datetime object. May be useful for sorting """
+        return self.time
+    
+    @property
+    def des(self):
+        """ returns NASA's unique identifer of the object """
+        return self._designation
+    
+    @property
+    def hash_key(self):
+        """ Returns a unique hash key for this event and object. """
+        hashMe = str(self.time) + self.des
+        hashMe = hashMe.encode('utf-8')
+        return hashlib.sha256(hashMe)
 
     @property
     def time_str(self):
