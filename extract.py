@@ -15,6 +15,7 @@ You'll edit this file in Task 2.
 import csv
 import json
 from collections import deque
+from helpers import cd_to_datetime
 
 from models import NearEarthObject, CloseApproach
 
@@ -63,5 +64,23 @@ def load_approaches(cad_json_path):
     :param cad_json_path: A path to a JSON file containing data about close approaches.
     :return: A collection of `CloseApproach`es.
     """
-    # TODO: Load close approach data from the given JSON file.
-    return ()
+    approach_deque = deque()
+
+    with open(cad_json_path,'r') as bigJson:
+        data = json.load(bigJson)
+        approaches = data['data']
+
+        for approach in approaches:
+            # Perform input conversions
+            pdes = approach[0]
+            time = cd_to_datetime(approach[3])
+            distance = float(approach[4])
+            velocity = float(approach[7])
+
+            approach_deque.append(CloseApproach(
+                designation = pdes,
+                time = time,
+                distance = distance,
+                velocity = velocity
+            ))
+    return approach_deque
