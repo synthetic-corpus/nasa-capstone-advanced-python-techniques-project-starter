@@ -17,6 +17,7 @@ iterator.
 You'll edit this file in Tasks 3a and 3c.
 """
 import operator
+from helpers import numerical_to_datetime
 
 
 class UnsupportedCriterionError(NotImplementedError):
@@ -71,10 +72,17 @@ class AttributeFilter:
     def __repr__(self):
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
+class checkExactDate(AttributeFilter):
+    @classmethod
+    def get(cls,approach):
+        # Easier way to get exact date.
+        return approach.datetime.strftime('%Y-%m-%d')
+    
+
 class checkDate(AttributeFilter):
     @classmethod
     def get(cls,approach):
-        # Returns the raw datetime object. Will turn it into a Date later.
+        # Returns the raw datetime object.
         return approach.datetime
 
 class checkDistance(AttributeFilter):
@@ -138,8 +146,34 @@ def create_filters(
     :param hazardous: Whether the NEO of a matching `CloseApproach` is potentially hazardous.
     :return: A collection of filters for use with `query`.
     """
-    # TODO: Decide how you will represent your filters.
-    return ()
+    #seems easier to do this then make a bunch of if/then statements
+    myFilters = []
+    filter_dict = {
+        'date': {'op': operator.eq, 'fClass': checkExactDate},
+        'start_date':{'op': operator.ge, 'fClass': checkDate},
+        'end_date':{'op': operator.le, 'fClass': checkDate},
+        'distance_min':{'op': operator.ge, 'fClass': checkDistance},
+        'distance_max':{'op': operator.le, 'fClass': checkDistance},
+        'velocity_min':{'op': operator.ge, 'fClass': checkVelocity},
+        'velocity_max':{'op': operator.le,'fClass': checkVelocity},
+        'diameter_min':{'op': operator.ge,'fClass': checkDiameter},
+        'diameter_max':{'op': operator.le, 'fClass': checkDiameter},
+        'hazardous': {'op': operator.eq, 'fClass:': checkHazardous}
+    }
+    arguments = {**locals()}
+    del arguments['myFilters']# delete a non argument local value
+    del arguments['filter_dict']
+    for key,value in arguments.items():
+        if value is not None:
+            # If the value is not None, then make the corresponding filters
+            print("the key is ",key)
+            if key == 'start_date':
+                value = numerical_to_datetime(str(value) + ' 00:00')
+            if key == 'end_date':
+                value = numerical_to_datetime(str(value) + ' 23:59')  
+            myFilters.append(filter_dict[key]['fClass'](filter_dict[key]['op'],value))
+
+    return myFilters
 
 
 def limit(iterator, n=None):

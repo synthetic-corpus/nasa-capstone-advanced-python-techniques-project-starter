@@ -12,6 +12,10 @@ provide that level of resolution, so the output format also will not.
 """
 import datetime
 
+def numerical_to_datetime(this_date):
+    """ Convets dates like 2005-08-15 00:23 into datetime"""
+    thing = datetime.datetime.strptime(this_date, "%Y-%m-%d %H:%M")
+    return thing
 
 def cd_to_datetime(calendar_date):
     """Convert a NASA-formatted calendar date/time description into a datetime.
