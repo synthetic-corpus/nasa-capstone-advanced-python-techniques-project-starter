@@ -166,12 +166,20 @@ def create_filters(
     for key,value in arguments.items():
         if value is not None:
             # If the value is not None, then make the corresponding filters
-            print("the key is ",key)
+            # print("the key is ",key)
             if key == 'start_date':
                 value = numerical_to_datetime(str(value) + ' 00:00')
             if key == 'end_date':
-                value = numerical_to_datetime(str(value) + ' 23:59')  
-            myFilters.append(filter_dict[key]['fClass'](filter_dict[key]['op'],value))
+                value = numerical_to_datetime(str(value) + ' 23:59')
+
+            # a Slight edge case for date
+            if key == 'date':
+                start = numerical_to_datetime(str(value) + ' 00:00')
+                end = numerical_to_datetime(str(value) + ' 23:59')
+                myFilters.append(filter_dict['start_date']['fClass'](filter_dict['start_date']['op'],start))
+                myFilters.append(filter_dict['end_date']['fClass'](filter_dict['end_date']['op'],end))
+            else:
+                myFilters.append(filter_dict[key]['fClass'](filter_dict[key]['op'],value))
 
     return myFilters
 
