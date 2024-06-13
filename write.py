@@ -12,6 +12,25 @@ You'll edit this file in Part 4.
 """
 import csv
 import json
+import math
+
+def prepCSV(closeApproach):
+    """ This is a Helper Function. It takes in one close approach object and formats its for CSV dict injest"""
+    returnThis = {}
+    tempDict = closeApproach.serialize()
+    tempDict.update(closeApproach.neo.serialize())
+
+    for key,value in tempDict.items():
+        if value == None:
+            value = '' # CSV files love emptry strings!
+        if value == False:
+            value = 'False'
+        if value == True:
+            value = 'True'
+        if key == 'diameter_km' and math.isnan(value):
+            value = 'nan'
+        returnThis[key] = value
+    return returnThis
 
 
 def write_to_csv(results, filename):
@@ -24,11 +43,16 @@ def write_to_csv(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
-    fieldnames = (
+    
+    with open(filename,'w',newline = '') as outCSV:
+        fieldnames = (
         'datetime_utc', 'distance_au', 'velocity_km_s',
         'designation', 'name', 'diameter_km', 'potentially_hazardous'
-    )
-    # TODO: Write the results to a CSV file, following the specification in the instructions.
+        )
+        writer = csv.DictWriter(outCSV, fieldnames)
+        writer.writeheader()
+        for row in results:
+            writer.writerow(prepCSV(row))
 
 
 def write_to_json(results, filename):
