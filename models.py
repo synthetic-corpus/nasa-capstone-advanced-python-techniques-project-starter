@@ -53,7 +53,7 @@ class NearEarthObject:
 
         # Create an empty initial collection of linked approaches.
         self.approaches = []
-
+    
     @property
     def des(self):
         """ gets the unique identifier of this NEO as a property """
@@ -88,6 +88,16 @@ class NearEarthObject:
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, " \
                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
+    
+    def serialize(self):
+        """ Returns properties of this NEO as a dictionary """
+        asDict = {
+            'designation': self.designation,
+            'name': self.name,
+            'diameter_km': self.diameter,
+            'potentially_hazardous': self.hazardous
+        }
+        return asDict
 
 
 class CloseApproach:
@@ -110,7 +120,7 @@ class CloseApproach:
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
 
-            Similiar as above, all data transformation/ sanitization is done prior to the invocation of this fucntion.
+            Similiar as above, all data transformation/ sanitization is done prior to the invocation of this function.
             Code for that sanitization is also found in extract.py
         """
         # TODO: Assign information from the arguments passed to the constructor
@@ -172,3 +182,12 @@ class CloseApproach:
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, " \
                f"velocity={self.velocity:.2f}, neo={self.neo!r}, hash_key={self.hash_key})"
+    
+    def serialize(self):
+        """ Returns the properties of the close encounter as a dictionary"""
+        asDict = {
+            'datetime_utc': self.time_str,
+            'distance_au': self.distance,
+            'velocity_km_s': self.velocity
+        }
+        return asDict

@@ -18,6 +18,7 @@ You'll edit this file in Tasks 3a and 3c.
 """
 import operator
 from helpers import numerical_to_datetime
+import itertools
 
 
 class UnsupportedCriterionError(NotImplementedError):
@@ -194,4 +195,4 @@ def limit(iterator, n=None):
     :yield: The first (at most) `n` values from the iterator.
     """
     # TODO: Produce at most `n` values from the given iterator.
-    return iterator
+    return itertools.islice(iterator, n)
