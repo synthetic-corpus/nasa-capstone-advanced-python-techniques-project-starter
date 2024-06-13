@@ -178,7 +178,6 @@ def create_filters(
     del arguments['filter_dict']
     del arguments['op_dict']
     for key,value in arguments.items():
-        print(key,value)
         if value is not None:
             # If the value is not None, then make the corresponding filters
             # print("the key is ",key)
@@ -209,4 +208,7 @@ def limit(iterator, n=None):
     :yield: The first (at most) `n` values from the iterator.
     """
     # TODO: Produce at most `n` values from the given iterator.
-    return itertools.islice(iterator, n)
+    if n == 0 or None:
+        return iterator
+    else:
+        return itertools.islice(iterator, 0, n)
