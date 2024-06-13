@@ -149,22 +149,36 @@ def create_filters(
     """
     #seems easier to do this then make a bunch of if/then statements
     myFilters = []
+    op_dict = {
+        'date': operator.eq,
+        'start_date': operator.ge,
+        'end_date': operator.le,
+        'distance_min': operator.ge,
+        'distance_max': operator.le, 
+        'velocity_min': operator.ge,
+        'velocity_max': operator.le,
+        'diameter_min': operator.ge,
+        'diameter_max': operator.le, 
+        'hazardous': operator.eq, 
+    }
     filter_dict = {
-        'date': {'op': operator.eq, 'fClass': checkExactDate},
-        'start_date':{'op': operator.ge, 'fClass': checkDate},
-        'end_date':{'op': operator.le, 'fClass': checkDate},
-        'distance_min':{'op': operator.ge, 'fClass': checkDistance},
-        'distance_max':{'op': operator.le, 'fClass': checkDistance},
-        'velocity_min':{'op': operator.ge, 'fClass': checkVelocity},
-        'velocity_max':{'op': operator.le,'fClass': checkVelocity},
-        'diameter_min':{'op': operator.ge,'fClass': checkDiameter},
-        'diameter_max':{'op': operator.le, 'fClass': checkDiameter},
-        'hazardous': {'op': operator.eq, 'fClass:': checkHazardous}
+        'date':checkExactDate,
+        'start_date':checkDate,
+        'end_date': checkDate,
+        'distance_min': checkDistance,
+        'distance_max': checkDistance,
+        'velocity_min': checkVelocity,
+        'velocity_max': checkVelocity,
+        'diameter_min': checkDiameter,
+        'diameter_max': checkDiameter,
+        'hazardous': checkHazardous
     }
     arguments = {**locals()}
     del arguments['myFilters']# delete a non argument local value
     del arguments['filter_dict']
+    del arguments['op_dict']
     for key,value in arguments.items():
+        print(key,value)
         if value is not None:
             # If the value is not None, then make the corresponding filters
             # print("the key is ",key)
@@ -177,10 +191,10 @@ def create_filters(
             if key == 'date':
                 start = numerical_to_datetime(str(value) + ' 00:00')
                 end = numerical_to_datetime(str(value) + ' 23:59')
-                myFilters.append(filter_dict['start_date']['fClass'](filter_dict['start_date']['op'],start))
-                myFilters.append(filter_dict['end_date']['fClass'](filter_dict['end_date']['op'],end))
+                myFilters.append(filter_dict['start_date'](op_dict['start_date'],start))
+                myFilters.append(filter_dict['end_date'](op_dict['end_date'],end))
             else:
-                myFilters.append(filter_dict[key]['fClass'](filter_dict[key]['op'],value))
+                myFilters.append(filter_dict[key](op_dict[key],value))
 
     return myFilters
 
