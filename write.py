@@ -42,4 +42,15 @@ def write_to_json(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
+    result_list = []
+    for closeApproach in results:
+        # makes a nice Dictionary object from two Dictionaries.
+        appendThis = closeApproach.serialize()
+        appendThis['neo'] = closeApproach.neo.serialize()
+        result_list.append(appendThis)
+
+    with open(filename,'w') as outfile:
+        json.dump(result_list,outfile)
+
+
     # TODO: Write the results to a JSON file, following the specification in the instructions.

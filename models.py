@@ -19,6 +19,7 @@ You'll edit this file in Task 1.
 """
 from helpers import cd_to_datetime, datetime_to_str
 import hashlib
+import math
 
 
 class NearEarthObject:
@@ -91,10 +92,15 @@ class NearEarthObject:
     
     def serialize(self):
         """ Returns properties of this NEO as a dictionary """
+        if math.isnan(self.diameter):
+            d = None
+        else:
+            d = self.diameter
+
         asDict = {
             'designation': self.designation,
             'name': self.name,
-            'diameter_km': self.diameter,
+            'diameter_km': d,
             'potentially_hazardous': self.hazardous
         }
         return asDict
