@@ -42,7 +42,8 @@ class NEODatabase:
         self._neos = neos
         self._approaches = approaches
 
-        # TODO: using this dict because otherwise we'd have to 'search' the deque everytime
+        # start by creating a dictionry of NEOs, with their PDES as the key.
+        # prevents continuous searching.
         self._neos_as_dict = {neo.des: neo for neo in self._neos}
 
         for approach in approaches:
@@ -88,6 +89,7 @@ class NEODatabase:
         
         filtered = [neo for neo in self._neos if neo.name == name]
         if len(filtered) > 0:
+            # Prints this to a log for future proofing. Would help detect duplicate entries in a data source.
             print("get_neo_by_name found %s NEO. Should not exepect more than one. Input was %s" % (len(filtered), name))
             return filtered[0] # this is expected to work unless there is more than one NEO with the same name.
         else:
@@ -107,12 +109,12 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        # TODO: Generate `CloseApproach` objects that match all of the filters.
+        
         for approach in self._approaches:
-            passing = True # assume that the approach passes, but will be marked false by filters
+            passing = True # assume that the approach passes, but can be marked false by filters
             for filter in filters:
                 if filter(approach) == False:
-                    # If any single turns out to be fasle, passing is false
+                    # If any single turns out to be false, passing in general is false
                     # There is no further logic that would flip it back to "true"
                     passing = False
             if passing:
