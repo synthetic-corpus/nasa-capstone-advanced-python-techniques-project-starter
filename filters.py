@@ -107,6 +107,7 @@ class checkDiameter(AttributeFilter):
 
 
 class checkHazardous(AttributeFilter):
+    """ is a filter class that compares to whether or not an NEO is dangerous. """
     @classmethod
     def get (cls,approach):
         # Returns the if this is a hazardous object

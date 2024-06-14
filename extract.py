@@ -25,6 +25,8 @@ def load_neos(neo_csv_path):
 
     :param neo_csv_path: A path to a CSV file containing data about near-Earth objects.
     :return: A collection of `NearEarthObject`s.
+
+    Loading_neo sanitizes/transform several csv values so that they are the right type for Class objects.
     """
     with open(neo_csv_path,'r') as neoCSV:
         reader = csv.DictReader(neoCSV)
@@ -63,6 +65,9 @@ def load_approaches(cad_json_path):
 
     :param cad_json_path: A path to a JSON file containing data about close approaches.
     :return: A collection of `CloseApproach`es.
+
+    The loading sanitizes and transforms several json values to ensure that 
+    they are the right data type for the corresponding class.
     """
     approach_deque = deque()
 
