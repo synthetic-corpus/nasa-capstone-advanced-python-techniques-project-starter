@@ -33,14 +33,20 @@ class NearEarthObject:
     initialized to an empty collection, but eventually populated in the
     `NEODatabase` constructor.
     """
-    # TODO: How can you, and should you, change the arguments to this constructor?
-    # If you make changes, be sure to update the comments in this file.
+   
+
     def __init__(self, **info):
         """Create a new `NearEarthObject`.
 
         :param info: This variadic for future proofing. i.e. new iterations of this project may take in additional keywords.
+            However, the specif keys expected parameters are:
+            
+            pdes - NASA's designation as a string
+            name - the name of the NEO, if it is named, as a string
+            diameter - diameter of the NEO in km.
+            pha - a boolean value if this is dangerous or not earth.
 
-            However, the data is expected to be sanitzied and edge cases handled prior to the invocation of the function.
+            The data is expected to be sanitzied and edge cases handled prior to the invocation of the function.
             Specifically, data sanitation is done on extract.py
 
             Reason being, is I could concieve of getting this information via .csv, .json, an async request, sql response object of some sort etc. 
@@ -61,19 +67,22 @@ class NearEarthObject:
 
     @property
     def fullname(self):
-        """Return a representation of the full name of this NEO."""
-        # TODO: Use self.designation and self.name to build a fullname for this object.
-        return "%s - %s" % (self.designation,self.name) # what is the expectation when the object is unnamed?
+        """Return a representation of the full name of this NEO. In this case, it is simply the two combed together"""
+        if self.name == None:
+            localName = 'unnamed NEO'
+        else:
+            localName = self.name
+        return "%s - %s" % (self.designation,localName)
 
     def appendApproach(self,approach):
-        """ Appends an approach to this element. May add sorting here later"""
+        """ Appends an approach to this element. 
+        :param a CloseApproach instance
+        """
         self.approaches.append(approach)
 
     def __str__(self):
-        """Return `str(self)`."""
-        # TODO: Use this object's attributes to return a human-readable string representation.
-        # The project instructions include one possibility. Peek at the __repr__
-        # method for examples of advanced string formatting.
+        """Returns an easy to read summary of the object as a sentance. 
+        Tells the user its PDES, name, and if its dangerous"""
         if self.name:  
             begin = f"A NearEarthObject with a PDES as {self.designation}, commonly known as {self.name!r}. "
         else:
@@ -90,7 +99,7 @@ class NearEarthObject:
                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
     
     def serialize(self):
-        """ Returns properties of this NEO as a dictionary """
+        """ Returns properties of this NEO as a Python dictionary """
         asDict = {
             'designation': self.designation,
             'name': self.name,
@@ -113,20 +122,24 @@ class CloseApproach:
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
-    # TODO: How can you, and should you, change the arguments to this constructor?
-    # If you make changes, be sure to update the comments in this file.
+   
+
     def __init__(self, **info):
         """Create a new `CloseApproach`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
+            The expected arguments are
+            
+            designation - string value for the NASA pdes
+            time - a datetime object
+            distance - a float representing the distance
+            velocity - a flot represeting the relative velocity of the object.
 
-            Similiar as above, all data transformation/ sanitization is done prior to the invocation of this function.
-            Code for that sanitization is also found in extract.py
+        Similiar as the NearEarthObject class, 
+        all data transformation/ sanitization is done prior to the invocation of this function.
+        Code for that sanitization is also found in extract.py
         """
-        # TODO: Assign information from the arguments passed to the constructor
-        # onto attributes named `_designation`, `time`, `distance`, and `velocity`.
-        # You should coerce these values to their appropriate data type and handle any edge cases.
-        # The `cd_to_datetime` function will be useful.
+
         self._designation = info['designation']
         self.time = info['time']
         self.distance = info['distance']
@@ -147,7 +160,7 @@ class CloseApproach:
     
     @property
     def hash_key(self):
-        """ Returns a unique hash key for this event and object. """
+        """ Returns a unique hash key for this event and object. Would be good as primary key in a Database """
         hashMe = str(self.time) + self.des
         hashMe = hashMe.encode('utf-8')
         return hashlib.sha256(hashMe)
@@ -165,9 +178,7 @@ class CloseApproach:
         formatted string that can be used in human-readable representations and
         in serialization to CSV and JSON files.
         """
-        # TODO: Use this object's `.time` attribute and the `datetime_to_str` function to
-        # build a formatted representation of the approach time.
-        # TODO: Use self.designation and self.name to build a fullname for this object.
+        
         return datetime_to_str(self.time)
 
     def __str__(self):

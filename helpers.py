@@ -13,7 +13,11 @@ provide that level of resolution, so the output format also will not.
 import datetime
 
 def numerical_to_datetime(this_date):
-    """ Convets dates like 2005-08-15 00:23 into datetime"""
+    """ Convets dates like 2005-08-15 00:23 into a datetime object
+    
+    :param this_date A string in the format of yyyy-mm-dd hh:mm. 
+        Days and months are numbers with leading zeroes. Hours are in 24 hour clocock time.
+    """
     thing = datetime.datetime.strptime(this_date, "%Y-%m-%d %H:%M")
     return thing
 
