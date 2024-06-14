@@ -73,20 +73,17 @@ class AttributeFilter:
     def __repr__(self):
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
-class checkExactDate(AttributeFilter):
-    @classmethod
-    def get(cls,approach):
-        # Easier way to get exact date.
-        return approach.datetime.strftime('%Y-%m-%d')
     
-
 class checkDate(AttributeFilter):
+    """ Is a filter class that compares to a CloseApproach date."""
     @classmethod
     def get(cls,approach):
         # Returns the raw datetime object.
         return approach.datetime
 
+
 class checkDistance(AttributeFilter):
+    """ Is a filter class that compares to a CloseApproach distance from earth."""
     @classmethod
     def get (cls,approach):
         # Returns the distance
@@ -94,22 +91,27 @@ class checkDistance(AttributeFilter):
 
 
 class checkVelocity(AttributeFilter):
+    """ Is a filter class that compares to a CloseApproach relative velocity."""
     @classmethod
     def get(cls,approach):
         # Returns the Velocity
         return approach.velocity
 
+
 class checkDiameter(AttributeFilter):
+    """ Is a filter class that compares to a NEO's diamater"""
     @classmethod
     def get (cls,approach):
         # Returns the distance
         return approach.neo.diameter
-    
+
+
 class checkHazardous(AttributeFilter):
     @classmethod
     def get (cls,approach):
         # Returns the if this is a hazardous object
         return approach.neo.hazardous
+
 
 def create_filters(
         date=None, start_date=None, end_date=None,
@@ -147,8 +149,11 @@ def create_filters(
     :param hazardous: Whether the NEO of a matching `CloseApproach` is potentially hazardous.
     :return: A collection of filters for use with `query`.
     """
-    #seems easier to do this then make a bunch of if/then statements
+    
+    # this is the list to be returned.
     myFilters = []
+
+    # op_dict maps the parameter to the expect operator.
     op_dict = {
         'date': operator.eq,
         'start_date': operator.ge,
@@ -161,9 +166,11 @@ def create_filters(
         'diameter_max': operator.le, 
         'hazardous': operator.eq, 
     }
+
+    # filter dict maps the parameter to the corresponding function.
     filter_dict = {
-        'date':checkExactDate,
-        'start_date':checkDate,
+        'date':None, # is None because it relies on start_date and end_date instead.
+        'start_date': checkDate,
         'end_date': checkDate,
         'distance_min': checkDistance,
         'distance_max': checkDistance,
@@ -173,26 +180,30 @@ def create_filters(
         'diameter_max': checkDiameter,
         'hazardous': checkHazardous
     }
+    # Get the arguments as new object. We want to iterate over it...
     arguments = {**locals()}
-    del arguments['myFilters']# delete a non argument local value
+    # ... but must be sure to delete those that are not to be iterated over.
+    del arguments['myFilters']
     del arguments['filter_dict']
     del arguments['op_dict']
+
     for key,value in arguments.items():
+        # If the value is not None, then make the corresponding filters
         if value is not None:
-            # If the value is not None, then make the corresponding filters
-            # print("the key is ",key)
+            # dates have an edge case. hours and minutes must be applied
             if key == 'start_date':
                 value = numerical_to_datetime(str(value) + ' 00:00')
             if key == 'end_date':
                 value = numerical_to_datetime(str(value) + ' 23:59')
 
-            # a Slight edge case for date
+            # If an exact date is selected, we use the same filters start_date and end_date
             if key == 'date':
                 start = numerical_to_datetime(str(value) + ' 00:00')
                 end = numerical_to_datetime(str(value) + ' 23:59')
                 myFilters.append(filter_dict['start_date'](op_dict['start_date'],start))
                 myFilters.append(filter_dict['end_date'](op_dict['end_date'],end))
             else:
+                # all other functions will not need transformation.
                 myFilters.append(filter_dict[key](op_dict[key],value))
 
     return myFilters
@@ -201,13 +212,12 @@ def create_filters(
 def limit(iterator, n=None):
     """Produce a limited stream of values from an iterator.
 
-    If `n` is 0 or None, don't limit the iterator at all.
+    If `n` is 0 or None, don't limit the iterator at all, i.e the iterator argument is simply returned.
 
     :param iterator: An iterator of values.
     :param n: The maximum number of values to produce.
     :yield: The first (at most) `n` values from the iterator.
     """
-    # TODO: Produce at most `n` values from the given iterator.
     if n == 0 or None:
         return iterator
     else:
