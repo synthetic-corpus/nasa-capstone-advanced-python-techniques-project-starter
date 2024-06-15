@@ -34,26 +34,26 @@ def load_neos(neo_csv_path):
         for line in reader:
             # get only the columns needed. Discard the rest
             necessary_keys = {'pdes','name','pha','diameter'}
-            newLine = {key: line[key] for key in necessary_keys if key in line.keys()}
+            new_line = {key: line[key] for key in necessary_keys if key in line.keys()}
             
             # sanitization for the keys:
-            if newLine['name'] == '':
-                newLine['name'] = None
-            if newLine['pha'] == 'Y':
-                newLine['pha'] = True
+            if new_line['name'] == '':
+                new_line['name'] = None
+            if new_line['pha'] == 'Y':
+                new_line['pha'] = True
             else:
-                newLine['pha'] = False
-            if newLine['diameter'] == '':
-                newLine['diameter'] = float('nan')
+                new_line['pha'] = False
+            if new_line['diameter'] == '':
+                new_line['diameter'] = float('nan')
             else:
-                newLine['diameter'] = float(newLine['diameter'])
+                new_line['diameter'] = float(new_line['diameter'])
 
             
             neo_deque.append(NearEarthObject(
-                pdes = newLine['pdes'],
-                name = newLine['name'],
-                diameter = newLine['diameter'],
-                pha = newLine['pha']
+                pdes = new_line['pdes'],
+                name = new_line['name'],
+                diameter = new_line['diameter'],
+                pha = new_line['pha']
             ))
 
 

@@ -50,7 +50,7 @@ class NEODatabase:
             # Associate approach to its NEO
             approach.neo = self._neos_as_dict[approach.des]
             # add approach to corresponding NEO
-            self._neos_as_dict[approach.des].appendApproach(approach)
+            self._neos_as_dict[approach.des].append_approach(approach)
 
 
     def get_neo_by_designation(self, designation):

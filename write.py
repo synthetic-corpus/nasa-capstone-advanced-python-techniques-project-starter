@@ -14,7 +14,7 @@ import csv
 import json
 import math
 
-def prepCSV(closeApproach):
+def prep_csv(closeApproach):
     """ This is a Helper Function. It takes in one close approach object and formats its for CSV dict injest"""
     returnThis = {}
     tempDict = closeApproach.serialize()
@@ -52,7 +52,7 @@ def write_to_csv(results, filename):
         writer = csv.DictWriter(outCSV, fieldnames)
         writer.writeheader()
         for row in results:
-            writer.writerow(prepCSV(row))
+            writer.writerow(prep_csv(row))
 
 
 def write_to_json(results, filename):
@@ -75,6 +75,3 @@ def write_to_json(results, filename):
 
     with open(filename,'w') as outfile:
         json.dump(result_list,outfile)
-
-
-    # TODO: Write the results to a JSON file, following the specification in the instructions.

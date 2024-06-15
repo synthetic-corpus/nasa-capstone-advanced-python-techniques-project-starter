@@ -74,7 +74,7 @@ class AttributeFilter:
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
     
-class checkDate(AttributeFilter):
+class CheckDate(AttributeFilter):
     """ Is a filter class that compares to a CloseApproach date."""
     @classmethod
     def get(cls,approach):
@@ -82,7 +82,7 @@ class checkDate(AttributeFilter):
         return approach.datetime
 
 
-class checkDistance(AttributeFilter):
+class CheckDistance(AttributeFilter):
     """ Is a filter class that compares to a CloseApproach distance from earth."""
     @classmethod
     def get (cls,approach):
@@ -90,7 +90,7 @@ class checkDistance(AttributeFilter):
         return approach.distance
 
 
-class checkVelocity(AttributeFilter):
+class CheckVelocity(AttributeFilter):
     """ Is a filter class that compares to a CloseApproach relative velocity."""
     @classmethod
     def get(cls,approach):
@@ -98,7 +98,7 @@ class checkVelocity(AttributeFilter):
         return approach.velocity
 
 
-class checkDiameter(AttributeFilter):
+class CheckDiameter(AttributeFilter):
     """ Is a filter class that compares to a NEO's diamater"""
     @classmethod
     def get (cls,approach):
@@ -106,7 +106,7 @@ class checkDiameter(AttributeFilter):
         return approach.neo.diameter
 
 
-class checkHazardous(AttributeFilter):
+class CheckHazardous(AttributeFilter):
     """ is a filter class that compares to whether or not an NEO is dangerous. """
     @classmethod
     def get (cls,approach):
@@ -152,7 +152,7 @@ def create_filters(
     """
     
     # this is the list to be returned.
-    myFilters = []
+    my_filters = []
 
     # op_dict maps the parameter to the expect operator.
     op_dict = {
@@ -171,20 +171,20 @@ def create_filters(
     # filter dict maps the parameter to the corresponding function.
     filter_dict = {
         'date':None, # is None because it relies on start_date and end_date instead.
-        'start_date': checkDate,
-        'end_date': checkDate,
-        'distance_min': checkDistance,
-        'distance_max': checkDistance,
-        'velocity_min': checkVelocity,
-        'velocity_max': checkVelocity,
-        'diameter_min': checkDiameter,
-        'diameter_max': checkDiameter,
-        'hazardous': checkHazardous
+        'start_date': CheckDate,
+        'end_date': CheckDate,
+        'distance_min': CheckDistance,
+        'distance_max': CheckDistance,
+        'velocity_min': CheckVelocity,
+        'velocity_max': CheckVelocity,
+        'diameter_min': CheckDiameter,
+        'diameter_max': CheckDiameter,
+        'hazardous': CheckHazardous
     }
     # Get the arguments as new object. We want to iterate over it...
     arguments = {**locals()}
     # ... but must be sure to delete those that are not to be iterated over.
-    del arguments['myFilters']
+    del arguments['my_filters']
     del arguments['filter_dict']
     del arguments['op_dict']
 
@@ -201,13 +201,13 @@ def create_filters(
             if key == 'date':
                 start = numerical_to_datetime(str(value) + ' 00:00')
                 end = numerical_to_datetime(str(value) + ' 23:59')
-                myFilters.append(filter_dict['start_date'](op_dict['start_date'],start))
-                myFilters.append(filter_dict['end_date'](op_dict['end_date'],end))
+                my_filters.append(filter_dict['start_date'](op_dict['start_date'],start))
+                my_filters.append(filter_dict['end_date'](op_dict['end_date'],end))
             else:
                 # all other functions will not need transformation.
-                myFilters.append(filter_dict[key](op_dict[key],value))
+                my_filters.append(filter_dict[key](op_dict[key],value))
 
-    return myFilters
+    return my_filters
 
 
 def limit(iterator, n=None):

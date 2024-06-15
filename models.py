@@ -74,7 +74,7 @@ class NearEarthObject:
             localName = self.name
         return "%s - %s" % (self.designation,localName)
 
-    def appendApproach(self,approach):
+    def append_approach(self,approach):
         """ Appends an approach to this element. 
         :param a CloseApproach instance
         """
@@ -196,9 +196,9 @@ class CloseApproach:
     
     def serialize(self):
         """ Returns the properties of the close encounter as a dictionary"""
-        asDict = {
+        as_dict = {
             'datetime_utc': self.time_str,
             'distance_au': self.distance,
             'velocity_km_s': self.velocity
         }
-        return asDict
+        return as_dict
