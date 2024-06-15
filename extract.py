@@ -29,8 +29,8 @@ def load_neos(neo_csv_path):
     Loading_neo sanitizes/transform several csv values so that 
     they are the right type for Class objects.
     """
-    with open(neo_csv_path,'r') as neoCSV:
-        reader = csv.DictReader(neoCSV)
+    with open(neo_csv_path,'r',encoding='utf-8') as neo_csv:
+        reader = csv.DictReader(neo_csv)
         neo_deque = deque()
         for line in reader:
             # get only the columns needed. Discard the rest
@@ -72,8 +72,8 @@ def load_approaches(cad_json_path):
     """
     approach_deque = deque()
 
-    with open(cad_json_path,'r') as bigJson:
-        data = json.load(bigJson)
+    with open(cad_json_path,'r',encoding='utf-8') as big_json:
+        data = json.load(big_json)
         approaches = data['data']
 
         for approach in approaches:
