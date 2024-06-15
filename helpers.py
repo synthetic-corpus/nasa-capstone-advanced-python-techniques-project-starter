@@ -12,15 +12,18 @@ provide that level of resolution, so the output format also will not.
 """
 import datetime
 
+
 def numerical_to_datetime(this_date):
     """ Convets dates like 2005-08-15 00:23 into a datetime object
-    
-    :param string: this_date A string in the format of yyyy-mm-dd hh:mm. 
-        Days and months are numbers with leading zeroes. Hours are in 24 hour clocock time.
+
+    :param string: this_date A string in the format of yyyy-mm-dd hh:mm.
+        Days and months are numbers with leading zeroes. Hours are
+        in 24 hour clocock time.
     :return datetime: a datetime object generate from above string.
     """
     thing = datetime.datetime.strptime(this_date, "%Y-%m-%d %H:%M")
     return thing
+
 
 def cd_to_datetime(calendar_date):
     """Convert a NASA-formatted calendar date/time description into a datetime.
@@ -30,10 +33,12 @@ def cd_to_datetime(calendar_date):
 
         2020-Dec-31 12:00
 
-    This will become the Python object `datetime.datetime(2020, 12, 31, 12, 0)`.
+    This will become the Python object
+    `datetime.datetime(2020, 12, 31, 12, 0)`.
 
     :param calendar_date: A calendar date in YYYY-bb-DD hh:mm format.
-    :return: A naive `datetime` corresponding to the given calendar date and time.
+    :return: A naive `datetime` corresponding to the given
+    calendar date and time.
     """
     return datetime.datetime.strptime(calendar_date, "%Y-%b-%d %H:%M")
 
@@ -41,11 +46,12 @@ def cd_to_datetime(calendar_date):
 def datetime_to_str(dt):
     """Convert a naive Python datetime into a human-readable string.
 
-    The default string representation of a datetime includes seconds; however,
-    our data isn't that precise, so this function only formats the year, month,
-    date, hour, and minute values. Additionally, this function provides the date
-    in the usual ISO 8601 YYYY-MM-DD format to avoid ambiguities with
-    locale-specific month names.
+    The default string representation of a datetime includes seconds;
+    however, our data isn't that precise, so this function only
+    formats the year, month, date, hour, and minute values.
+    Additionally, this function provides the datein the usual
+    ISO 8601 YYYY-MM-DD format to avoid ambiguities with locale-specific
+    month names.
 
     :param dt: A naive Python datetime.
     :return: That datetime, as a human-readable string without seconds.
