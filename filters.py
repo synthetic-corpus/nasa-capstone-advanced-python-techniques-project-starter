@@ -18,7 +18,7 @@ You'll edit this file in Tasks 3a and 3c.
 """
 import operator
 import itertools
-from helpers import numerical_to_datetime, datetime_to_str
+from helpers import numerical_to_datetime
 
 
 class UnsupportedCriterionError(NotImplementedError):

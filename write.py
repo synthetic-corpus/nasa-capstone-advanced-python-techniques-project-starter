@@ -45,7 +45,7 @@ def write_to_csv(results, filename):
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     
-    with open(filename,'w',newline = '') as out_csv:
+    with open(filename,'w',newline = '',encoding='utf-8') as out_csv:
         fieldnames = (
         'datetime_utc', 'distance_au', 'velocity_km_s',
         'designation', 'name', 'diameter_km', 'potentially_hazardous'
@@ -74,5 +74,5 @@ def write_to_json(results, filename):
         append_this['neo'] = close_approach.neo.serialize()
         result_list.append(append_this)
 
-    with open(filename,'w') as outfile:
+    with open(filename,'w',encoding='utf-8') as outfile:
         json.dump(result_list,outfile)
