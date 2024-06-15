@@ -1,14 +1,17 @@
-"""Extract data on near-Earth objects and close approaches from CSV and JSON files.
+"""Extract data on near-Earth objects and close
+approaches from CSV and JSON files.
 
-The `load_neos` function extracts NEO data from a CSV file, formatted as
-described in the project instructions, into a collection of `NearEarthObject`s.
+The `load_neos` function extracts NEO data from a CSV file,
+formatted as described in the project instructions,
+into a collection of `NearEarthObject`s.
 
-The `load_approaches` function extracts close approach data from a JSON file,
-formatted as described in the project instructions, into a collection of
-`CloseApproach` objects.
+The `load_approaches` function extracts close approach
+data from a JSON file, formatted as described in the project
+instructions, into a collection of`CloseApproach` objects.
 
-The main module calls these functions with the arguments provided at the command
-line, and uses the resulting collections to build an `NEODatabase`.
+The main module calls these functions with the arguments
+provided at the command line, and uses the resulting
+collections to build an `NEODatabase`.
 
 You'll edit this file in Task 2.
 """
@@ -23,19 +26,21 @@ from models import NearEarthObject, CloseApproach
 def load_neos(neo_csv_path):
     """Read near-Earth object information from a CSV file.
 
-    :param neo_csv_path: A path to a CSV file containing data about near-Earth objects.
+    :param neo_csv_path: A path to a CSV file containing
+    data about near-Earth objects.
     :return: A collection (deque) of `NearEarthObject`s.
 
-    Loading_neo sanitizes/transform several csv values so that 
-    they are the right type for Class objects.
+    Loading_neo sanitizes/transform several csv values
+    so that they are the right type for Class objects.
     """
-    with open(neo_csv_path,'r',encoding='utf-8') as neo_csv:
+    with open(neo_csv_path, 'r', encoding='utf-8') as neo_csv:
         reader = csv.DictReader(neo_csv)
         neo_deque = deque()
         for line in reader:
             # get only the columns needed. Discard the rest
-            necessary_keys = {'pdes','name','pha','diameter'}
-            new_line = {key: line[key] for key in necessary_keys if key in line.keys()}
+            necessary_keys = {'pdes', 'name', 'pha', 'diameter'}
+            new_line = {key: line[key] for key in necessary_keys
+                        if key in line.keys()}
 
             # sanitization for the keys:
             if new_line['name'] == '':
@@ -49,14 +54,10 @@ def load_neos(neo_csv_path):
             else:
                 new_line['diameter'] = float(new_line['diameter'])
 
-
-            neo_deque.append(NearEarthObject(
-                pdes = new_line['pdes'],
-                name = new_line['name'],
-                diameter = new_line['diameter'],
-                pha = new_line['pha']
-            ))
-
+            neo_deque.append(NearEarthObject(pdes=new_line['pdes'],
+                                             name=new_line['name'],
+                                             diameter=new_line['diameter'],
+                                             pha=new_line['pha']))
 
     return neo_deque
 
@@ -64,15 +65,17 @@ def load_neos(neo_csv_path):
 def load_approaches(cad_json_path):
     """Read close approach data from a JSON file.
 
-    :param cad_json_path: A path to a JSON file containing data about close approaches.
+    :param cad_json_path: A path to a JSON file containing
+    data about close approaches.
     :return: A collection (deque) of `CloseApproach`es.
 
-    The loading sanitizes and transforms several json values to ensure that 
-    they are the right data type for the corresponding class.
+    The loading sanitizes and transforms several
+    json values to ensure that they are the right
+    data type for the corresponding class.
     """
     approach_deque = deque()
 
-    with open(cad_json_path,'r',encoding='utf-8') as big_json:
+    with open(cad_json_path, 'r', encoding='utf-8') as big_json:
         data = json.load(big_json)
         approaches = data['data']
 
@@ -84,9 +87,9 @@ def load_approaches(cad_json_path):
             velocity = float(approach[7])
 
             approach_deque.append(CloseApproach(
-                designation = pdes,
-                time = time,
-                distance = distance,
-                velocity = velocity
+                designation=pdes,
+                time=time,
+                distance=distance,
+                velocity=velocity
             ))
     return approach_deque
