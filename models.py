@@ -33,12 +33,13 @@ class NearEarthObject:
     initialized to an empty collection, but eventually populated in the
     `NEODatabase` constructor.
     """
-   
+
 
     def __init__(self, **info):
         """Create a new `NearEarthObject`.
 
-        :param info: This variadic for future proofing. i.e. new iterations of this project may take in additional keywords.
+        :param info: This variadic for future proofing. i.e. new iterations of this project may 
+            take in additional keywords.
             However, the specif keys expected parameters are:
             
             pdes - NASA's designation as a string
@@ -46,11 +47,14 @@ class NearEarthObject:
             diameter - diameter of the NEO in km.
             pha - a boolean value if this is dangerous or not earth.
 
-            The data is expected to be sanitzied and edge cases handled prior to the invocation of the function.
+            The data is expected to be sanitzied and edge cases handled 
+            prior to the invocation of the function.
             Specifically, data sanitation is done on extract.py
 
-            Reason being, is I could concieve of getting this information via .csv, .json, an async request, sql response object of some sort etc. 
-            Each would require a custom helper function(s) to sanitize them anyway, so it's better to lightly couple the sanitization from object creation.
+            Reason being, is I could concieve of getting this information via .csv, .json, 
+            an async request, sql response object of some sort etc. 
+            Each would require a custom helper function(s) to sanitize them anyway, 
+            so it's better to lightly couple the sanitization from object creation.
         """
         self.designation = info['pdes']
         self.name = info['name'] # will sanitize at ingest, empty strings will be set to None
@@ -59,7 +63,7 @@ class NearEarthObject:
 
         # Create an empty initial collection of linked approaches.
         self.approaches = []
-    
+
     @property
     def des(self):
         """ gets the unique identifier of this NEO as a property """
@@ -67,12 +71,13 @@ class NearEarthObject:
 
     @property
     def fullname(self):
-        """Return a representation of the full name of this NEO. In this case, it is simply the two combed together"""
-        if self.name == None:
-            localName = 'unnamed NEO'
+        """Return a representation of the full name of this NEO. 
+        In this case, it is simply the two combed together"""
+        if self.name is None:
+            local_name = 'unnamed NEO'
         else:
-            localName = self.name
-        return "%s - %s" % (self.designation,localName)
+            local_name = self.name
+        return f'{self.designation} - {local_name}'
 
     def append_approach(self,approach):
         """ Appends an approach to this element. 
@@ -84,7 +89,8 @@ class NearEarthObject:
         """Returns an easy to read summary of the object as a sentance. 
         Tells the user its PDES, name, and if its dangerous"""
         if self.name:  
-            begin = f"A NearEarthObject with a PDES as {self.designation}, commonly known as {self.name!r}. "
+            begin = f"A NearEarthObject with a PDES as {self.designation}, \
+                commonly known as {self.name!r}. "
         else:
             begin = f"An unnamed NearEarthObject with a PDES as {self.designation}. "
         if self.hazardous:
@@ -97,7 +103,7 @@ class NearEarthObject:
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, " \
                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
-    
+
     def serialize(self):
         """ Returns properties of this NEO as a Python dictionary """
         asDict = {
@@ -122,7 +128,7 @@ class CloseApproach:
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
-   
+
 
     def __init__(self, **info):
         """Create a new `CloseApproach`.
@@ -152,18 +158,19 @@ class CloseApproach:
     def datetime(self):
         """ gets the time as a raw datetime object. May be useful for sorting """
         return self.time
-    
+
     @property
     def des(self):
         """ returns NASA's unique identifer of the object """
         return self._designation
-    
+
     @property
     def hash_key(self):
-        """ Returns a unique hash key for this event and object. Would be good as primary key in a Database """
-        hashMe = str(self.time) + self.des
-        hashMe = hashMe.encode('utf-8')
-        return hashlib.sha256(hashMe)
+        """ Returns a unique hash key for this event and object. 
+        Would be good as primary key in a Database """
+        hash_me = str(self.time) + self.des
+        hash_me = hash_me.encode('utf-8')
+        return hashlib.sha256(hash_me)
 
     @property
     def time_str(self):
@@ -178,22 +185,23 @@ class CloseApproach:
         formatted string that can be used in human-readable representations and
         in serialization to CSV and JSON files.
         """
-        
+
         return datetime_to_str(self.time)
 
     def __str__(self):
         """Return `str(self)`. Can use the common name for the object"""
         if self.neo.name is not None:
-            nameString = f"(commonly known as {self.neo.name})"
+            nameString = f'(commonly known as {self.neo.name})'
         else:
             nameString = "(an unnamed object)"
-        return f"{self.time_str} - {self.des} {nameString} approached earth with a relative velocity of {self.velocity}."
+        return f'{self.time_str} - {self.des} {nameString} approached earth \
+                    with a relative velocity of {self.velocity}.'
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, " \
                f"velocity={self.velocity:.2f}, neo={self.neo!r}, hash_key={self.hash_key})"
-    
+
     def serialize(self):
         """ Returns the properties of the close encounter as a dictionary"""
         as_dict = {

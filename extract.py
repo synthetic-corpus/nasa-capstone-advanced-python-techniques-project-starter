@@ -26,7 +26,8 @@ def load_neos(neo_csv_path):
     :param neo_csv_path: A path to a CSV file containing data about near-Earth objects.
     :return: A collection (deque) of `NearEarthObject`s.
 
-    Loading_neo sanitizes/transform several csv values so that they are the right type for Class objects.
+    Loading_neo sanitizes/transform several csv values so that 
+    they are the right type for Class objects.
     """
     with open(neo_csv_path,'r') as neoCSV:
         reader = csv.DictReader(neoCSV)
@@ -35,7 +36,7 @@ def load_neos(neo_csv_path):
             # get only the columns needed. Discard the rest
             necessary_keys = {'pdes','name','pha','diameter'}
             new_line = {key: line[key] for key in necessary_keys if key in line.keys()}
-            
+
             # sanitization for the keys:
             if new_line['name'] == '':
                 new_line['name'] = None
@@ -48,7 +49,7 @@ def load_neos(neo_csv_path):
             else:
                 new_line['diameter'] = float(new_line['diameter'])
 
-            
+
             neo_deque.append(NearEarthObject(
                 pdes = new_line['pdes'],
                 name = new_line['name'],

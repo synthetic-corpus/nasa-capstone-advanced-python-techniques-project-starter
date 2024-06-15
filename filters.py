@@ -17,8 +17,8 @@ iterator.
 You'll edit this file in Tasks 3a and 3c.
 """
 import operator
-from helpers import numerical_to_datetime
 import itertools
+from helpers import numerical_to_datetime, datetime_to_str
 
 
 class UnsupportedCriterionError(NotImplementedError):
@@ -73,13 +73,15 @@ class AttributeFilter:
     def __repr__(self):
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
-    
 class CheckDate(AttributeFilter):
     """ Is a filter class that compares to a CloseApproach date."""
     @classmethod
     def get(cls,approach):
         # Returns the raw datetime object.
         return approach.datetime
+
+    def __str__(self):
+        return f"Filters on a value {self.op.__name__} on a date object."
 
 
 class CheckDistance(AttributeFilter):
@@ -89,6 +91,10 @@ class CheckDistance(AttributeFilter):
         # Returns the distance
         return approach.distance
 
+    def __str__(self):
+        return f"Filters on a value {self.op.__name__} on a float object (distance)."
+
+
 
 class CheckVelocity(AttributeFilter):
     """ Is a filter class that compares to a CloseApproach relative velocity."""
@@ -96,6 +102,9 @@ class CheckVelocity(AttributeFilter):
     def get(cls,approach):
         # Returns the Velocity
         return approach.velocity
+
+    def __str__(self):
+        return f"Filters on a value {self.op.__name__} on a float object (velocity)."
 
 
 class CheckDiameter(AttributeFilter):
@@ -105,6 +114,9 @@ class CheckDiameter(AttributeFilter):
         # Returns the distance
         return approach.neo.diameter
 
+    def __str__(self):
+        return f"Filters on a value {self.op.__name__} on a float object (diameter)."
+
 
 class CheckHazardous(AttributeFilter):
     """ is a filter class that compares to whether or not an NEO is dangerous. """
@@ -112,6 +124,9 @@ class CheckHazardous(AttributeFilter):
     def get (cls,approach):
         # Returns the if this is a hazardous object
         return approach.neo.hazardous
+
+    def __str__(self):
+        return f"Filters on a value {self.op.__name__} on a boolean object (is dangerous?)."
 
 
 def create_filters(
@@ -150,7 +165,7 @@ def create_filters(
     :param hazardous: Whether the NEO of a matching `CloseApproach` is potentially hazardous.
     :return: A collection of filters for use with `query`.
     """
-    
+
     # this is the list to be returned.
     my_filters = []
 
@@ -170,7 +185,7 @@ def create_filters(
 
     # filter dict maps the parameter to the corresponding function.
     filter_dict = {
-        'date':None, # is None because it relies on start_date and end_date instead.
+        'date': None, # is None because it relies on start_date and end_date instead.
         'start_date': CheckDate,
         'end_date': CheckDate,
         'distance_min': CheckDistance,
@@ -181,14 +196,23 @@ def create_filters(
         'diameter_max': CheckDiameter,
         'hazardous': CheckHazardous
     }
-    # Get the arguments as new object. We want to iterate over it...
-    arguments = {**locals()}
-    # ... but must be sure to delete those that are not to be iterated over.
-    del arguments['my_filters']
-    del arguments['filter_dict']
-    del arguments['op_dict']
 
-    for key,value in arguments.items():
+    # this object exists entirely to avoid getting lint'ed by PIP 8 standards.
+    # Original idea was to simply grab by *locals().
+    arguments_dict = {
+        'date': date,
+        'start_date': start_date,
+        'end_date': end_date,
+        'distance_min': distance_min,
+        'distance_max': distance_max,
+        'velocity_min': velocity_min,
+        'velocity_max': velocity_max,
+        'diameter_min': diameter_min,
+        'diameter_max': diameter_max,
+        'hazardous': hazardous
+    }
+
+    for key,value in arguments_dict.items():
         # If the value is not None, then make the corresponding filters
         if value is not None:
             # dates have an edge case. hours and minutes must be applied
@@ -213,13 +237,14 @@ def create_filters(
 def limit(iterator, n=None):
     """Produce a limited stream of values from an iterator.
 
-    If `n` is 0 or None, don't limit the iterator at all, i.e the iterator argument is simply returned.
+    If `n` is 0 or None, don't limit the iterator at all, 
+    i.e the iterator argument is simply returned.
 
     :param iterator: An iterator of values.
     :param n: The maximum number of values to produce.
     :yield: The first (at most) `n` values from the iterator.
     """
-    if n == 0 or None:
+    if n == 0 or n is None:
         return iterator
-    else:
-        return itertools.islice(iterator, 0, n)
+
+    return itertools.islice(iterator, 0, n)

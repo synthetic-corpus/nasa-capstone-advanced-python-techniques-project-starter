@@ -84,13 +84,13 @@ class NEODatabase:
         """
         if name == '' or name is None:
             # Gatekeeps bad input, and prints to Log
-            print("Bad input on get_neo_by_name! User input: %s " % (name))
+            print(f'Bad input on get_neo_by_name! User input: {name}')
             return None
         
         filtered = [neo for neo in self._neos if neo.name == name]
         if len(filtered) > 0:
             # Prints this to a log for future proofing. Would help detect duplicate entries in a data source.
-            print("get_neo_by_name found %s NEO. Should not exepect more than one. Input was %s" % (len(filtered), name))
+            print(f'get_neo_by_name found {len(filtered)} NEOs! Input was {name}')
             return filtered[0] # this is expected to work unless there is more than one NEO with the same name.
         else:
             return None
@@ -109,11 +109,11 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        
+
         for approach in self._approaches:
             passing = True # assume that the approach passes, but can be marked false by filters
-            for filter in filters:
-                if filter(approach) == False:
+            for a_filter in filters:
+                if a_filter(approach) is False:
                     # If any single turns out to be false, passing in general is false
                     # There is no further logic that would flip it back to "true"
                     passing = False
